@@ -36,13 +36,13 @@ module Sinatra
           allowed_origins = *settings.allow_origin # make sure its an array
           origin = allowed_origins.join('|')       # we'll return this unless allowed
 
-          allowed_origins.each do |allowed_origin|
-            if allowed_origin.is_a?(Regexp) ? 
-                request_origin =~ allowed_origin : 
-                request_origin == allowed_origin
-              origin = request_origin
-              break
+          allowed_origins.find do |allowed_origin|
+            allow = if allowed_origin.is_a?(Regexp)
+              request_origin =~ allowed_origin
+            else
+              request_origin == allowed_origin
             end
+            origin = request_origin if allow
           end
         end
 
